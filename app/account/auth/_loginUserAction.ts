@@ -1,4 +1,5 @@
 "use server";
+import prisma from "../../../lib/prisma";
 
 const loginUserAction = async (prevState: any, formData: FormData) => {
   const email = formData.get("email") as string;
@@ -16,7 +17,7 @@ const loginUserAction = async (prevState: any, formData: FormData) => {
 
     const data = await createUserResponse.json();
 
-    if (!createUserResponse) {
+    if (!createUserResponse || !createUserResponse.ok) {
       return { message: data.message || "failed request", success: false };
     }
 

@@ -8,10 +8,11 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({ where: { email } });
 
-    console.log("user", user);
-
     if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 500 });
+      return NextResponse.json(
+        { message: "User not found", success: false },
+        { status: 500 }
+      );
     }
 
     const passwordVerified = await bcrypt.compare(password, user.password);

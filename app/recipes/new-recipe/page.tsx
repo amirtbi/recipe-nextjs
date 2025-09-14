@@ -1,27 +1,28 @@
 "use client";
 import Title from "@/_components/Title/Title";
-import { createRecipe } from "./_actions/createRecipe";
+import { createRecipe } from "./_actions/_createRecipe";
 import { useRouter } from "next/navigation";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { userDataService } from "../../../services/user-data-service";
 
 const NewRecipe = () => {
   const router = useRouter();
   const user = userDataService.useStore((state) => state.user);
-  console.log("user", user);
   const [state, formAction, isPending] = useActionState(createRecipe, {
     success: false,
     message: "",
   });
 
-  if (state.success) {
-    return router.push("/");
-  }
+  useEffect(() => {
+    if (state.success) {
+      return router.push("/");
+    }
+  }, [state]);
 
   return (
     <>
       <div className="flex flex-col gap-3">
-        <Title>New Recipe</Title>
+        <h1 className="text-2xl text-slate-500 font-bold py-4">New Recipe</h1>
         <div className="rounded-md bg-slate-400 shadow-md p-4">
           <form action={formAction} className="flex flex-col gap-5">
             <input type="hidden" name="userId" value={user.id} />
@@ -72,6 +73,13 @@ const NewRecipe = () => {
                 rows={6}
                 className="w-full px-4 py-2 border rounded-lg"
               />
+            </div>
+
+            <div>
+              <label htmlFor="recipeImage" className="block text-sm mb-2">
+                Upload file
+              </label>
+              <input id="recipeImage" type="file" name="recipe-image" />
             </div>
 
             <button

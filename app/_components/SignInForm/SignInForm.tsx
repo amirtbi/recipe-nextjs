@@ -6,17 +6,17 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import loginUserAction from "@/account/auth/_loginUserAction";
 import { userDataService } from "../../../services/user-data-service";
+import { H1Icon } from "@heroicons/react/16/solid";
 
 const SignInForm = () => {
   const login = userDataService.useStore((state) => state.login);
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(loginUserAction, {
-    success: false,
+    success: true,
     message: "",
   });
 
   useEffect(() => {
-    debugger;
     if (state.success) {
       if (state.data) {
         debugger;
@@ -32,6 +32,11 @@ const SignInForm = () => {
       <div className="flex flex-col gap-3">
         <Title>Sign In</Title>
         <div className="rounded-md bg-slate-400 shadow-md p-4">
+          {!state.success && (
+            <h1 className="text-center w-full text-red-600 font-regular py-2">
+              {state.message}!
+            </h1>
+          )}
           <form action={formAction} className="flex flex-col gap-5">
             <div>
               <label htmlFor="email" className="block text-sm mb-2">

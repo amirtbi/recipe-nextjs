@@ -17,7 +17,7 @@ const createUserAction = async (prevState: any, formData: FormData) => {
 
   const data = await createUserResponse.json();
 
-  if (!createUserResponse) {
+  if (!createUserResponse || !createUserResponse.ok) {
     return { message: data.message || "failed request", success: false };
   }
 

@@ -12,7 +12,7 @@ const SignUpForm = () => {
   const router = useRouter();
   const login = userDataService.useStore((state) => state.login);
   const [state, formAction, isPending] = useActionState(createUserAction, {
-    success: false,
+    success: true,
     message: "",
   });
 
@@ -31,6 +31,11 @@ const SignUpForm = () => {
       <div className="flex flex-col gap-3">
         <Title>Sign Up</Title>
         <div className="rounded-md bg-slate-400 shadow-md p-4">
+          {!state.success && (
+            <h1 className="text-center w-full text-red-600 font-regular py-2">
+              {state.message}!
+            </h1>
+          )}
           <form action={formAction} className="flex flex-col gap-5">
             <div>
               <label htmlFor="name" className="block text-sm mb-2">

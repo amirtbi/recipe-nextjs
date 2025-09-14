@@ -27,9 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full w-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} h-full w-full scroll-smooth min-h-screen bg-slate-300 text-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} h-full w-full scroll-smooth min-h-screen bg-slate-200 text-gray-900`}
       >
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen bg-slate-300">
           <Hydration>
             <main className="pb-20 px-4 overflow-y-auto">{children}</main>
             <Header />

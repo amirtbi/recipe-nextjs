@@ -19,7 +19,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="fixed transform w-[85%] translate-x-[-50%] translate-y-[-10px] left-[50%] bottom-0 rounded-2xl p-2 bg-slate-100 flex items-center justify-center gap-10 min-h-[50px]">
+      <div className="fixed transform w-[85%] translate-x-[-50%] translate-y-[-10px] z-5 left-[50%] bottom-0 rounded-2xl p-2 bg-slate-100 flex items-center justify-center gap-10 min-h-[50px]">
         {!hydrated ? null : (
           <>
             <Link

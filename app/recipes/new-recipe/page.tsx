@@ -26,6 +26,26 @@ const NewRecipe = () => {
         <div className="rounded-md bg-slate-400 shadow-md p-4">
           <form action={formAction} className="flex flex-col gap-5">
             <input type="hidden" name="userId" value={user.id} />
+            <div className="flex justify-between items-center">
+              <label htmlFor="Categories">Categories</label>
+              <select name="category">
+                <option className="text-slate-500" value="breakfast">
+                  Breakfast
+                </option>
+                <option className="text-slate-500" value="lunch">
+                  Lunch
+                </option>
+                <option className="text-slate-500" value="dinner">
+                  Dinner
+                </option>
+                <option className="text-slate-500" value="snacks">
+                  Snacks
+                </option>
+                <option className="text-slate-500" value="dessert">
+                  Dessert
+                </option>
+              </select>
+            </div>
             <div>
               <label htmlFor="name" className="block text-sm mb-2">
                 Name
@@ -87,7 +107,7 @@ const NewRecipe = () => {
               disabled={isPending}
               className="rounded-md px-4 py-2 text-sm  text-pink-100 bg-slate-600 hover:cursor-pointer hover:text-pink-200"
             >
-              Create Recipe
+              {isPending ? "sending..." : "Create Recipe"}
             </button>
           </form>
         </div>

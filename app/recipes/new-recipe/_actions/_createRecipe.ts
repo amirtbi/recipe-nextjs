@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 export const createRecipe = async (prevState: any, formDate: FormData) => {
   try {
     const userId = formDate.get("userId") as string;
+    const category = formDate.get("category") as string;
     const name = formDate.get("name") as string;
     const servings = Number(formDate.get("servings"));
     const prepTime = Number(formDate.get("prepTime"));
@@ -26,10 +27,15 @@ export const createRecipe = async (prevState: any, formDate: FormData) => {
         servings,
         instructions,
         prepTime,
+        category,
       }),
     });
 
     const responseData = await response.json();
+
+    if (!response.ok) {
+      return { success: false, message: "Form is not valid" };
+    }
 
     if (file) {
       const { data } = responseData;
@@ -41,10 +47,14 @@ export const createRecipe = async (prevState: any, formDate: FormData) => {
         method: "POST",
         body: uploadFile,
       });
+
+      if (!uploadResponse) {
+        console.warn("response failed");
+      }
       console.log("uploadResponse", await uploadResponse.json());
     }
 
-    revalidatePath("/home");
+    // revalidatePath("/home");
 
     return { success: true, message: "Recipe created!", data: responseData };
   } catch (e) {

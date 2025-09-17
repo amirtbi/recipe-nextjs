@@ -1,61 +1,70 @@
 import prisma from "@/../lib/prisma";
-import { MagnifyingGlassCircleIcon, PlusIcon } from "@heroicons/react/16/solid";
+import { PlusIcon } from "@heroicons/react/16/solid";
 
 import Link from "next/link";
 import { minioApiService } from "../lib/minio/minio-services";
 import Image from "next/image";
 import RecipeInfoBar from "./_components/RecipeInfobar/RecipeInfobar";
+import SearchRecipeForm from "./_components/SearchRecipeForm/SearchRecipeForm";
+import RecipeList from "./_components/RecipeList/RecipeList";
 
 const Page = async () => {
-  const recipes = await prisma.recipe.findMany({
-    include: {
-      Images: true,
-    },
-  });
+  const [categories, recipes] = await Promise.all([
+    prisma.category.findMany(),
+    prisma.recipe.findMany({
+      include: {
+        Image: true,
+      },
+    }),
+  ]);
 
   const recipesWithUrls = await Promise.all(
     recipes.map(async (recipe) => ({
       ...recipe,
-      imageUrls: await Promise.all(
-        recipe.Images.map((img) => minioApiService.getFile(img.key))
-      ),
+      imageUrl: recipe.Image
+        ? await minioApiService.getFile(recipe.Image.key)
+        : "",
     }))
   );
 
   return (
     <div className="flex flex-col">
-      <div className="flex gap-md justify-between items-center">
-        <h1 className="text-2xl text-slate-500 font-bold py-6">Recipes</h1>
-        <button className="bg-slate-600 text-sm flex items-center gap-4 hover:cursor-pointer px-3 py-1 rounded hover:bg-slate-500 hover:text-white">
-          <Link href="/recipes/new-recipe">New Recipe</Link>
-          <PlusIcon className="size-4" />
-        </button>
-      </div>
-      <div className="">
-        <div className="rounded-md grid grid-cols-1  text-pink-100 space-y-2 list-decimal list-inside font-[family-name:var(--font-geist-sans)]">
-          {recipesWithUrls.map((recipe) => (
-            <Link
-              href={`recipes/${recipe.id}`}
-              key={recipe.id}
-              className="flex flex-col bg-slate-200 p-2 rounded justify-between items-center gap-5 text-sm m-2"
-            >
-              <div className="relative overflow-hidden aspect-video w-full">
-                <div className="absolute w-full h-full z-3 bg-black/30"></div>
-
-                <Image
-                  alt="recipe"
-                  src={recipe.imageUrls[0] || ""}
-                  fill
-                  className="rounded-md object-contain"
-                />
-                <div className="w-full flex px-4 items-center justify-between text-white font-bold absolute z-4 bottom-5 left-0">
-                  <h1 className="truncate">{recipe.name}</h1>
-                  <RecipeInfoBar recipeId={recipe.id} />
-                </div>
-              </div>
-            </Link>
-          ))}
+      <section className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl text-slate-500 font-bold py-6">Recipes</h1>
+          <button className="bg-slate-600 text-sm flex items-center gap-4 hover:cursor-pointer px-3 py-1 rounded hover:bg-slate-500 hover:text-white">
+            <Link href="/recipes/new-recipe">New Recipe</Link>
+            <PlusIcon className="size-4" />
+          </button>
         </div>
+        <article className="flex items-center bg-slate-200 rounded-lg">
+          <SearchRecipeForm />
+        </article>
+      </section>
+      <div className=" rounded p-2 flex flex-col gap-2">
+        <section>
+          <h4 className="text-slate-500 text-md py-2 font-bold">Categories</h4>
+          <article className="p-2 bg-slate-200 rounded">
+            <div className="flex gap-2 max-w-[800px] overflow-x-auto px-2">
+              {categories.map((category, index) => (
+                <div
+                  key={category.name}
+                  className="flex text-xs p-2 text-slate-200 items-center justify-center rounded-lg bg-slate-500"
+                >
+                  {category.name.toUpperCase()}
+                </div>
+              ))}
+            </div>
+          </article>
+        </section>
+        <section className="p-2">
+          <h4 className="text-slate-500 text-md py-2 font-bold">
+            Popular Recipes
+          </h4>
+          <article className="p-2 bg-slate-200 rounded">
+            <RecipeList recipes={recipesWithUrls} />
+          </article>
+        </section>
       </div>
     </div>
   );

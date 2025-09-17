@@ -4,6 +4,7 @@ import { minioApiService } from "../../../../../lib/minio/minio-services";
 
 const updateRecipe = async (prevState: any, formDate: FormData) => {
   const userId = formDate.get("userId") as string;
+  const category = formDate.get("category");
   const recipeId = formDate.get("recipeId") as string;
   const name = formDate.get("name") as string | null;
   const servings = Number(formDate.get("servings"));
@@ -25,12 +26,13 @@ const updateRecipe = async (prevState: any, formDate: FormData) => {
         servings,
         prepTime,
         instructions,
+        category,
       }),
     }).then((res) => res.json());
 
     let filePromise: Promise<any> | null = null;
 
-    if (file) {
+    if (file && file.size > 0) {
       const foundFile = await prisma.recipeImages.findUnique({
         where: { recipeId: recipeId },
       });

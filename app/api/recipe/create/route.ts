@@ -3,7 +3,8 @@ import prisma from "../../../../lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { userId, name, servings, prepTime, instructions } = await req.json();
+    const { userId, name, servings, prepTime, instructions, category } =
+      await req.json();
 
     const userExists = await prisma.user.findUnique({ where: { id: userId } });
 
@@ -30,6 +31,16 @@ export async function POST(req: Request) {
           { name: "Salt", amount: 1, unit: "teaspoon" },
           { name: "Black Pepper", amount: 0.5, unit: "teaspoon" },
         ]),
+        recipeCategories: {
+          create: {
+            category: {
+              connectOrCreate: {
+                where: { name: category }, // check if category exists
+                create: { name: category }, // if not, create it
+              },
+            },
+          },
+        },
       },
     });
 

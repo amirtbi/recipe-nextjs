@@ -46,7 +46,7 @@ class MinioApiService {
 
       return url;
     } catch (e) {
-      return false;
+      return "";
     }
   }
 

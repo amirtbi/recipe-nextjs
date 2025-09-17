@@ -7,6 +7,7 @@ import { HeartIcon as SolidHeartIcon } from "@heroicons/react/16/solid";
 import { toggleLike } from "@/_toggleLike";
 import { useState } from "react";
 import Link from "next/link";
+import { userDataService } from "../../../services/user-data-service";
 
 interface RecipeInforBarProps {
   recipeId: string;
@@ -14,6 +15,8 @@ interface RecipeInforBarProps {
 
 const RecipeInfoBar = ({ recipeId }: RecipeInforBarProps) => {
   const [like, setLike] = useState(false);
+  const user = userDataService.useStore((state) => state.user);
+
   return (
     <div className="flex gap-2 items-center">
       <div className="bg-slate-600/20 rounded-full p-2">
@@ -25,7 +28,7 @@ const RecipeInfoBar = ({ recipeId }: RecipeInforBarProps) => {
         <div
           className="bg-slate-600/20 rounded-full p-2"
           onClick={async () => {
-            await toggleLike(recipeId, true);
+            await toggleLike(recipeId, user.id, true);
             setLike(true);
           }}
         >
@@ -35,7 +38,7 @@ const RecipeInfoBar = ({ recipeId }: RecipeInforBarProps) => {
         <div
           className="bg-slate-600/20 rounded-full p-2"
           onClick={async () => {
-            await toggleLike(recipeId, false);
+            await toggleLike(recipeId, user.id, false);
             setLike(false);
           }}
         >

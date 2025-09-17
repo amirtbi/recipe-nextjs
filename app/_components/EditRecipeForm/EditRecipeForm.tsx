@@ -19,6 +19,7 @@ const EditRecipeForm = ({ recipeInfo }: EditRecipeFormProps) => {
     message: "",
   });
 
+  debugger;
   useEffect(() => {
     if (state.success) {
       router.push(`/`);
@@ -39,6 +40,26 @@ const EditRecipeForm = ({ recipeInfo }: EditRecipeFormProps) => {
               defaultValue={recipeInfo?.name || ""}
               placeholder="recipe name..."
             />
+          </div>
+          <div className="flex items-center justify-between">
+            <label htmlFor="">category</label>
+            <select value={recipeInfo?.category?.name} name="category">
+              <option className="text-slate-500" value="breakfast">
+                Breakfast
+              </option>
+              <option className="text-slate-500" value="lunch">
+                Lunch
+              </option>
+              <option className="text-slate-500" value="dinner">
+                Dinner
+              </option>
+              <option className="text-slate-500" value="snacks">
+                Snacks
+              </option>
+              <option className="text-slate-500" value="dessert">
+                Dessert
+              </option>
+            </select>
           </div>
           <div className="flex flex-col gap-2">
             <label>Prepration Time:</label>

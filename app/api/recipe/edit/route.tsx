@@ -3,8 +3,16 @@ import prisma from "../../../../lib/prisma";
 
 export async function PUT(req: Request) {
   try {
-    const { name, recipeId, userId, instructions, file, servings, prepTime } =
-      await req.json();
+    const {
+      name,
+      recipeId,
+      userId,
+      instructions,
+      file,
+      servings,
+      prepTime,
+      category,
+    } = await req.json();
 
     const userExists = await prisma.user.findUnique({ where: { id: userId } });
 
@@ -23,6 +31,12 @@ export async function PUT(req: Request) {
         instructions: instructions ?? undefined,
         prepTime: isNaN(prepTime) ? undefined : prepTime,
         servings: isNaN(servings) ? undefined : servings,
+        recipeCategories: {
+          deleteMany: {},
+          create: category.map((name: number) => ({
+            category: { connect: { name: name } },
+          })),
+        },
       },
     });
 

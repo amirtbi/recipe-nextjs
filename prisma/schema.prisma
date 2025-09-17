@@ -12,27 +12,53 @@ datasource db {
 }
 
 model Recipe {
-  id           String         @id @default(cuid())
-  name         String         @unique
-  servings     Int?
-  prepTime     Int?
-  ingredients  String?
-  instructions String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  User         User           @relation(fields: [userId], references: [id])
-  userId       String
-  Images       RecipeImages[]
-  likes        Int            @default(0)
+  id               String           @id @default(cuid())
+  name             String           @unique
+  servings         Int?
+  prepTime         Int?
+  ingredients      String?
+  instructions     String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  User             User             @relation(fields: [userId], references: [id])
+  userId           String
+  Image            RecipeImages?
+  likes            Int              @default(0)
+  FavoriteRecipe   FavoriteRecipe?
+  recipeCategories RecipeCategory[]
+}
+
+model Category {
+  id               String           @id @default(cuid())
+  name             String           @unique
+  recipeCategories RecipeCategory[]
+}
+
+model RecipeCategory {
+  categoryId String
+  recipeId   String
+  recipe     Recipe   @relation(fields: [recipeId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  @@id([recipeId, categoryId]) // composite primary key
 }
 
 model User {
-  id       String   @id @default(cuid())
-  name     String
-  email    String   @unique
-  password String
-  phone    String   @unique
-  recipe   Recipe[]
+  id        String           @id @default(cuid())
+  name      String
+  email     String           @unique
+  password  String
+  phone     String           @unique
+  recipe    Recipe[]
+  favorites FavoriteRecipe[]
+}
+
+model FavoriteRecipe {
+  id       String @id @default(cuid())
+  User     User   @relation(fields: [userId], references: [id])
+  Recipe   Recipe @relation(fields: [recipeId], references: [id])
+  userId   String @unique
+  recipeId String @unique
 }
 
 model RecipeImages {

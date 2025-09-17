@@ -12,13 +12,35 @@ export default async function EditRecipe({
 
   const recipe = await prisma.recipe.findUnique({
     where: { id: id },
+    include: {
+      recipeCategories: {
+        include: {
+          category: true,
+        },
+      },
+    },
   });
 
   const recipeImage = await prisma.recipeImages.findUnique({
     where: { recipeId: id },
   });
 
-  recipeInfo = { ...recipe, key: await recipeImage?.key };
+  console.log(
+    "recipe?.recipeCategories[0]?.category,",
+    recipe?.recipeCategories[0].category
+  );
+
+  recipeInfo = {
+    id: recipe?.id,
+    ingredients: recipe?.ingredients,
+    instructions: recipe?.instructions,
+    likes: recipe?.likes,
+    name: recipe?.name,
+    prepTime: recipe?.prepTime,
+    servings: recipe?.servings,
+    category: recipe?.recipeCategories[0]?.category,
+    key: await recipeImage?.key,
+  };
 
   const ingredients = [];
 
